@@ -1,0 +1,3 @@
+node_modules
+fake-s3-bucket
+*.log
