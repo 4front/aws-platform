@@ -9,7 +9,7 @@ export FF_S3_DEPLOYMENTS_BUCKET='fake-s3-bucket'
 export FF_SESSION_SECRET='session-secret'
 export FF_LDAP_URL='ldap://LDAP0319.nordstrom.net'
 export FF_LDAP_BASE_DN='dc=nordstrom,dc=net'
-export FF_DEV_LOCAL_PORTAL='~/src/4front/portal'
+export FF_DEV_LOCAL_PORTAL='1'
 export DEBUG="4front:*"
 
 echo $1

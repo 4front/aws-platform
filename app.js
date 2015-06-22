@@ -7,6 +7,7 @@ var debug = require('debug')('4front:aws-platform');
 var _ = require('lodash');
 var ChildProcess = require('child_process');
 var log = require('4front-logger');
+var serveStatic = require('serve-static')
 var cookieParser = require('cookie-parser');
 
 var app = express();
@@ -23,7 +24,7 @@ catch (err) {
   process.exit();
 }
 
-app.use(favicon(path.join(__dirname, './public/favicon.ico')));
+app.use(favicon(path.join(__dirname, './public/images/favicon.ico')));
 
 // Static assets. Can be cached for a long time since every asset is
 // fingerprinted with versionId.
@@ -70,6 +71,9 @@ app.use("/portal", portal(_.extend({}, app.settings, {
   apiUrl: '/api'
 })));
 
+// Deliberately register the static middleware after all the other routes
+app.use(serveStatic('public/', {fallthrough: true, index: false}));
+
 app.all('*', function(req, res, next) {
   // If we fell all the way through, then raise a 404 error
   next(Error.http(404, "Page not found"));
@@ -80,7 +84,7 @@ app.all('*', function(req, res, next) {
 // the error page rendering middleware steals final control.
 app.use(function(err, req, res, next) {
   app.settings.logger.middleware.error(err, req, res, function() {
-    debug("last chance error page middleware");
+    debug("last chance error page middleware %s", err.stack);
 
     var errorJson = Error.toJson(err);
 
@@ -89,8 +93,13 @@ app.use(function(err, req, res, next) {
 
     res.set('Cache-Control', 'no-cache');
 
+    if (!err.status)
+      err.status = 500;
+
+    res.statusCode = err.status;
+
     if (req.xhr)
-      return res.status(err.status).json(errorJson);
+      return res.json(errorJson);
 
     var view = req.ext.customErrorView || path.join(__dirname + '/views/error.jade');
     res.render(view, errorJson);
