@@ -3,6 +3,7 @@ var zip = require('gulp-zip');
 var fs = require('fs');
 var del = require('del');
 var os = require('os');
+var spawn = require('child_process').spawn;
 var install = require('gulp-install');
 var runSequence = require('run-sequence');
 
@@ -17,7 +18,16 @@ gulp.task('clean', function(cb) {
 });
 
 gulp.task('copy', function() {
-  return gulp.src(['app.js', 'package.json', '.ebextensions/*', 'lib/**/*.js', 'public/*', 'views/*'], {base: "."})
+  var srcs = [
+    'app.js',
+    'package.json',
+    '.ebextensions/*',
+    'lib/**/*.js',
+    'public/**/*.*',
+    'views/*'
+  ];
+
+  return gulp.src(srcs, {base: "."})
     .pipe(gulp.dest('dist/'));
 });
 
@@ -44,19 +54,27 @@ gulp.task('upload', function() {
     }));
 });
 
-// gulp.task('uploadLatest', function() {
-//   gulp.src(os.tmpdir() + '/' + versionNumber + '.zip')
-//     .pipe(s3({
-//       bucket: '4front-media', //  Required
-//       ACL: 'public-read', //  Needs to be user-defined
-//       keyTransform: function(relative_filename) {
-//         return "platform-versions/_latest.zip"
-//       }
-//     }));
-// });
+// Run gulp on the portal module
+gulp.task('portal', function (callback) {
+  var spawned = spawn("gulp", ["build"], {
+    cwd: "./dist/node_modules/4front-portal",
+    inheritStdio: true,
+    waitForExit: true
+  });
 
+  spawned.on('exit', function(code, signal) {
+    // if (code !== 0)
+    callback();
+  });
 
-gulp.task('packageJson', function(callback) {
+  // exec('gulp', ['build'], function (err, stdout, stderr) {
+  //   console.log(stdout);
+  //   console.log(stderr);
+  //   cb(err);
+  // });
+});
+
+gulp.task('package-json', function(callback) {
   // Modify the package.json by clearing out the dependencies. We don't need them
   // since the .zip package contains all the node_modules. This will speed up the
   // ElasticBeanstalk deployment since it will not have any dependencies to install.
@@ -69,12 +87,20 @@ gulp.task('packageJson', function(callback) {
   });
 });
 
+gulp.task('s3-redirect', function(callback) {
+  // Update the S3 bucket redirect rules so /latest redirects to the highest numbered
+  // version.
+
+  // http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putBucketWebsite-property
+});
+
 gulp.task('deploy', function(callback) {
   return runSequence(
     ['clean'],
     ['copy'],
     ['node-mods'],
-    ['packageJson'],
+    ['portal'],
+    ['package-json'],
     ['zip'],
     ['upload'],
     // TODO: Update the redirect rules in the S3 bucket to point to the latest version

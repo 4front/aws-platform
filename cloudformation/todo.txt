@@ -1,0 +1,1 @@
+* Create security group for ElastiCache that allows inbound access over 6379 from the ElasticBeanstalk security group

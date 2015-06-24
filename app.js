@@ -111,6 +111,9 @@ app.use(function(err, req, res, next) {
 //   res.json(app.settings.cache.keys);
 // });
 
+// TODO: Run a series of diagnostic tests to ensure connectivity to all required
+// AWS resources including DynamoDB, Redis, and S3
+
 // Start the express server
 // Assuming that SSL cert is terminated upstream by something like Apache, Ngninx, or ELB,
 // so the node app only needs to listen over http.

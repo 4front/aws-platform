@@ -1,8 +1,9 @@
 {
   "name": "4front-aws-platform",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "AWS implementation of the 4front web app platform",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,7 +26,7 @@
     "4front-dynamodb": "git+https://git@github.com/4front/dynamodb.git",
     "4front-ldap-auth": "git+https://git@github.com/4front/ldap-auth.git",
     "4front-logger": "git+https://git@github.com/4front/logger.git",
-    "4front-login": "git+https://git@github.com/4front/login.git",
+    "4front-membership": "git://github.com/4front/membership.git",
     "4front-portal": "git+https://git@github.com/4front/portal.git",
     "4front-s3-storage": "git+https://git@github.com/4front/s3-storage.git",
     "aws-sdk": "^2.1.32",
