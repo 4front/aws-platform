@@ -3,3 +3,8 @@ fake-s3-bucket
 *.log
 .elasticbeanstalk
 dist
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

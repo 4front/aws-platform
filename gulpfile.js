@@ -46,10 +46,10 @@ gulp.task('zip', function() {
 gulp.task('upload', function() {
   gulp.src(os.tmpdir() + '/' + versionNumber + '.zip')
     .pipe(s3({
-      bucket: '4front-media', //  Required
+      bucket: '4front-platform-versions', //  Required
       ACL: 'public-read', //  Needs to be user-defined
       keyTransform: function(relative_filename) {
-        return "platform-versions/" + versionNumber + ".zip"
+        return "aws/" + versionNumber + ".zip"
       }
     }));
 });
