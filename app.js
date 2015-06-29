@@ -31,7 +31,7 @@ app.use(favicon(path.join(__dirname, './public/images/favicon.ico')));
 app.get('/deployments/:appId/:versionId/*', function(req, res, next) {
   var filePath = req.params[0];
 
-  app.settings.deployer.serveFile(req.params.appId,
+  app.settings.deployer.serve(req.params.appId,
     req.params.versionId, filePath, res);
 });
 
@@ -101,8 +101,14 @@ app.use(function(err, req, res, next) {
     if (req.xhr)
       return res.json(errorJson);
 
-    var view = req.ext.customErrorView || path.join(__dirname + '/views/error.jade');
-    res.render(view, errorJson);
+    var errorView;
+    if (req.ext)
+      errorView = req.ext.customErrorView;
+
+    if (!errorView)
+      errorView = path.join(__dirname + '/views/error.jade');
+
+    res.render(errorView, errorJson);
   });
 });
 
