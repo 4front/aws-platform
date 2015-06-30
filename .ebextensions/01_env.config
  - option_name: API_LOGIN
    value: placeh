@@ -1,0 +1,3 @@
+option_settings:
+  - option_name: NPM_PATH
+    value: /opt/elasticbeanstalk/node-install/node-v0.12.4-linux-x64/bin/npm

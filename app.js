@@ -1,5 +1,6 @@
 var express = require('express');
 var http = require('http');
+var urljoin = require('url-join');
 var fs = require('fs');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -25,15 +26,6 @@ catch (err) {
 }
 
 app.use(favicon(path.join(__dirname, './public/images/favicon.ico')));
-
-// Static assets. Can be cached for a long time since every asset is
-// fingerprinted with versionId.
-app.get('/deployments/:appId/:versionId/*', function(req, res, next) {
-  var filePath = req.params[0];
-
-  app.settings.deployer.serve(req.params.appId,
-    req.params.versionId, filePath, res);
-});
 
 // Putting this after the deployment static asset path
 // to avoid flooding logs with js and css requests.
