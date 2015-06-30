@@ -3,6 +3,7 @@ fake-s3-bucket
 *.log
 .elasticbeanstalk
 dist
+installed_addons
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

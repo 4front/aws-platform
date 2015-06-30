@@ -38,7 +38,7 @@ gulp.task('node-mods', function() {
 });
 
 gulp.task('zip', function() {
-  return gulp.src(['dist/**/*'])
+  return gulp.src(['dist/**/*'], {dot: true})
     .pipe(zip(versionNumber + '.zip'))
     .pipe(gulp.dest(os.tmpdir()));
 });

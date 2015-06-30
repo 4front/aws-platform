@@ -10,6 +10,7 @@ export FF_SESSION_SECRET='session-secret'
 export FF_LDAP_URL='ldap://LDAP0319.nordstrom.net'
 export FF_LDAP_BASE_DN='dc=nordstrom,dc=net'
 export DEBUG="4front:*"
+export FF_ADDONS="lodash"
 
 echo $1
 
