@@ -7,7 +7,7 @@ export FF_JWT_TOKEN_SECRET='token-secret'
 export FF_DEPLOYED_ASSETS_PATH='/deployments'
 export FF_S3_DEPLOYMENTS_BUCKET='fake-s3-bucket'
 export FF_SESSION_SECRET='session-secret'
-export DEBUG="4front:*"
+export DEBUG="4front:*,express-request-proxy"
 
 echo $1
 
