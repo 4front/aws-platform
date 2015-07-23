@@ -6,5 +6,8 @@ AWS specific implementation of the [4front](http://4front.io) open-source web ap
 
 [Installation instructions](http://4front.io/docs/install/aws.html)
 
+You can also run a local developer instance on OSX:
+[http://4front.io/docs/install/local.html](http://4front.io/docs/install/local.html)
+
 ## License
 Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0).
