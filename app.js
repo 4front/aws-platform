@@ -117,7 +117,9 @@ catch (err) {
 
 // TODO: Run a series of diagnostic tests to ensure connectivity to all required
 // AWS resources including DynamoDB, Redis, and S3
-require('./lib/addons')(app.settings)(function(err) {
+
+// Install plugins before starting the Express server
+require('./lib/plugins')(app.settings)(function(err) {
   if (err) {
     app.settings.error("4front initialization error, %s", err.stack);
     return process.exit(1);
