@@ -79,15 +79,19 @@ try {
     app.settings.logger.middleware.error(err, req, res, function() {
       debug("last chance error page middleware %s", err.stack);
 
+      if (!err.status)
+        err.status = 500;
+
       var errorJson = Error.toJson(err);
 
       if (process.env.NODE_ENV !== 'development')
         errorJson = _.pick(errorJson, 'message', 'code');
 
-      res.set('Cache-Control', 'no-cache');
+      // We don't care about the error stack for anything but 500 errors
+      if (res.status !== 500)
+        errorJson.stack = null;
 
-      if (!err.status)
-        err.status = 500;
+      res.set('Cache-Control', 'no-cache');
 
       res.statusCode = err.status;
 
