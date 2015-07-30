@@ -46,10 +46,22 @@ gulp.task('zip', function() {
 gulp.task('upload', function() {
   gulp.src(os.tmpdir() + '/' + versionNumber + '.zip')
     .pipe(s3({
-      bucket: '4front-platform-versions', //  Required
+      bucket: 'releases.4front.io', //  Required
       ACL: 'public-read', //  Needs to be user-defined
       keyTransform: function(relative_filename) {
         return "aws/" + versionNumber + ".zip"
+      }
+    }));
+});
+
+gulp.task('upload-latest', function() {
+  gulp.src(os.tmpdir() + '/' + versionNumber + '.zip')
+    .pipe(s3({
+      bucket: 'releases.4front.io', //  Required
+      ACL: 'public-read', //  Needs to be user-defined
+      ContentDisposition: "attachment;filename=" + versionNumber + ".zip",
+      keyTransform: function(relative_filename) {
+        return "aws/latest.zip"
       }
     }));
 });
@@ -102,8 +114,7 @@ gulp.task('deploy', function(callback) {
     ['portal'],
     ['package-json'],
     ['zip'],
-    ['upload'],
-    // TODO: Update the redirect rules in the S3 bucket to point to the latest version
+    ['upload', 'upload-latest'],
     callback
   );
 });
