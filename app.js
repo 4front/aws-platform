@@ -8,7 +8,8 @@ var debug = require('debug')('4front:aws-platform');
 var _ = require('lodash');
 var ChildProcess = require('child_process');
 var log = require('4front-logger');
-var serveStatic = require('serve-static')
+var serveStatic = require('serve-static');
+var accepts = require('accepts');
 
 var app = express();
 app.enable('trust proxy');
@@ -25,10 +26,11 @@ try {
   // to avoid flooding logs with js and css requests.
   app.use(app.settings.logger.middleware.request);
 
-  // Both these middleware are smart enough to detect if they've already been run
-  // so there's no danger if they are run again deeper down the pipeline.
+  // No harm in parsing cookies on all requests. But intentionally
+  // not parsing the body as the express-request-proxy needs the
+  // raw body to passthrough. The body-parser can be declared at the
+  // level in the middleware stack where it is needed.
   app.use(require('cookie-parser')());
-  app.use(require('body-parser').json());
 
   // Initialize the extended request object
   app.use(function(req, res, next) {
@@ -95,17 +97,27 @@ try {
 
       res.statusCode = err.status;
 
-      if (req.xhr)
-        return res.json(errorJson);
-
       var errorView;
       if (req.ext)
         errorView = req.ext.customErrorView;
 
-      if (!errorView)
-        errorView = path.join(__dirname + '/views/error.jade');
+      var accept = accepts(req);
+      switch (accept.type(['json', 'html'])) {
+        case 'json':
+          res.json(errorJson);
+          break;
+        case 'html':
+          if (!errorView)
+            errorView = path.join(__dirname + '/views/error.jade');
 
-      res.render(errorView, errorJson);
+          res.render(errorView, errorJson);
+          break;
+        default:
+          // the fallback is text/plain, so no need to specify it above
+          res.setHeader('Content-Type', 'text/plain')
+          res.write(JSON.stringify(errorJson));
+          break;
+      }
     });
   });
 }
