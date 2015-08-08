@@ -5,10 +5,10 @@ echo "Hit enter to continue or CTRL-C to cancel."
 read RIGHT_LOCATION
 
 # Install pow
-#curl get.pow.cx | sh
+curl get.pow.cx | sh
 
 # create 4front.dev
-#echo 1903 > ~/.pow/4front.dev
+echo 1903 > ~/.pow/4front.dev
 
 # Check for homebrew installed
 if [[ `which brew` ]]; then
