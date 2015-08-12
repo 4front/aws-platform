@@ -120,7 +120,7 @@ you please; please refer to our homepage. If you still want to use this script
 set your user to be an Administrator in System Preferences or `su' to a
 non-root user with Administrator privileges.
 EOABORT
-abort "4front requires the Mac OS X Homebrew package manager. Get it from http://brew.sh" if !File.exist('/usr/local/bin/brew')
+abort "4front requires the Mac OS X Homebrew package manager. Get it from http://brew.sh" if !File.exists?('/usr/local/bin/brew')
 abort <<-EOABORT unless Dir["#{FOURFRONT_PREFIX}/.git/*"].empty?
 It appears 4Front is already installed. If your intent is to reinstall you
 should do the following before running this installer again:
