@@ -1,5 +1,12 @@
 #!/System/Library/Frameworks/Ruby.framework/Versions/Current/usr/bin/ruby
-# install script helper functions copied from https://github.com/homebrew/install
+# By Ivan Storck http://ivanstorck.com
+# Install script helper functions copied from https://github.com/homebrew/install
+# Hombrew functions Copyright 2009-2015 Homebrew contributors
+# Additional functionality Copyright 2015 Aerobatic
+# BSD 2 Clause (NetBSD) license at https://github.com/Homebrew/homebrew/blob/master/LICENSE.txt
+# Users should run this command to use:
+# https://raw.githubusercontent.com/4front/aws-platform/install-script/install.rb
+# TODO replace with master instaed of install-script branch above
 
 FOURFRONT_REPO = 'https://github.com/4front/aws-platform'
 FOURFRONT_PREFIX = "#{ENV['HOME']}/4front"
@@ -134,7 +141,10 @@ you please; please refer to our homepage. If you still want to use this script
 set your user to be an Administrator in System Preferences or `su' to a
 non-root user with Administrator privileges.
 EOABORT
-abort "4front requires the Mac OS X Homebrew package manager. Get it from http://brew.sh" if !File.exists?('/usr/local/bin/brew')
+abort <<-EOABORT unless File.exists?('/usr/local/bin/brew')
+4front requires the Mac OS X Homebrew package manager. Get it from http://brew.sh
+or run: ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)
+EOABORT
 abort <<-EOABORT unless Dir["#{FOURFRONT_PREFIX}/.git/*"].empty?
 It appears 4Front is already installed. If your intent is to reinstall you
 should do the following before running this installer again:
