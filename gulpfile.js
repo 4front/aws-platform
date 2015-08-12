@@ -24,7 +24,8 @@ gulp.task('copy', function() {
     '.ebextensions/*',
     'lib/**/*.js',
     'public/**/*.*',
-    'views/*'
+    'views/*',
+    'setup/*'
   ];
 
   return gulp.src(srcs, {base: "."})

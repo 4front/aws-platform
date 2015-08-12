@@ -1,6 +1,6 @@
 {
   "name": "4front-aws-platform",
-  "version": "0.0.33",
+  "version": "0.0.35",
   "description": "AWS implementation of the 4front web app platform",
   "main": "index.js",
   "private": true,
