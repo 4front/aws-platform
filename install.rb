@@ -149,6 +149,13 @@ if macos_version >= "10.9"
 end
 
 ohai "Downloading and installing 4Front..."
+
+if File.exists?(FOURFRONT_PREFIX)
+  warn "4front directory alrady found, updating instead of installing"
+else
+  Dir.mkdir(FOURFRONT_PREFIX, 0700)
+end
+
 Dir.chdir FOURFRONT_PREFIX do
   if git
     # we do it in four steps to avoid merge errors when reinstalling
