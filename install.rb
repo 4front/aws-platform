@@ -94,6 +94,20 @@ def git
   @git
 end
 
+def node
+  # check for NVM, great!
+  @node ||= if ENV['NVM_BIN'] and File.executable? File.join(ENV['NVM_BIN'],'node')
+  elsif Kernel.system '/usr/bin/which -s node'
+    'node'
+  else
+    exe = `xcrun -find node 2>/dev/null`.chomp
+    exe if $? && $?.success? && !exe.empty? && File.executable?(exe)
+  end
+
+  return unless @node
+  @node
+end
+
 def chmod?(d)
   File.directory?(d) && !(File.readable?(d) && File.writable?(d) && File.executable?(d))
 end
@@ -148,6 +162,17 @@ if macos_version >= "10.9"
   end
 end
 
+ohai "Installing dependencies..."
+warn " Make sure to read the info for each package and set up services or copy commands to start services"
+
+system "brew install pow"
+system "brew install dynamodb-local"
+system "brew install redis"
+
+ohai "Please scroll up to read info for each brew package."
+
+wait_for_user if STDIN.tty?
+
 ohai "Downloading and installing 4Front..."
 
 if File.exists?(FOURFRONT_PREFIX)
@@ -176,6 +201,12 @@ Dir.chdir FOURFRONT_PREFIX do
     curl_flags = "fsSL"
     system "/bin/bash -o pipefail -c '/usr/bin/curl -#{curl_flags} #{FOURFRONT_REPO}/tarball/master | /usr/bin/tar xz -m --strip 1'"
   end
+  if node
+    `npm install`
+    `node ./node_modules/4front-dynamodb/scripts/create-local-tables.js`
+  else
+    abort 'You need a working NodeJS install. Try `brew install nvm`'
+  end
 end
 
 ohai "Installation successful!"
@@ -189,4 +220,4 @@ else
   puts "Install #{Tty.white}Xcode#{Tty.reset}: https://developer.apple.com/xcode" unless File.exist? "/usr/bin/cc"
 end
 
-puts "Run `4front help` to get started"
+puts "Run `npm start` to start the 4front platform server."
