@@ -134,21 +134,21 @@ catch (err) {
 // TODO: Run a series of diagnostic tests to ensure connectivity to all required
 // AWS resources including DynamoDB, Redis, and S3
 
+// Start the express server
+// Assuming that SSL cert is terminated upstream by something like Apache, Ngninx, or ELB,
+// so the node app only needs to listen over http.
+debug("start the express server");
+var server = http.createServer(app);
+return server.listen(app.settings.port, function(err){
+  if (err) return callback(err);
+
+  app.settings.logger.info("4front platform running on port " + app.settings.port);
+});
+
 // Install plugins before starting the Express server
-require('./lib/plugins')(app.settings)(function(err) {
-  if (err) {
-    app.settings.error("4front initialization error, %s", err.stack);
-    return process.exit(1);
-  }
-
-  // Start the express server
-  // Assuming that SSL cert is terminated upstream by something like Apache, Ngninx, or ELB,
-  // so the node app only needs to listen over http.
-  debug("start the express server");
-  var server = http.createServer(app);
-  return server.listen(app.settings.port, function(err){
-    if (err) return callback(err);
-
-    app.settings.logger.info("4front platform running on port " + app.settings.port);
-  });
+// require('./lib/plugins')(app.settings)(function(err) {
+//   if (err) {
+//     app.settings.error("4front initialization error, %s", err.stack);
+//     return process.exit(1);
+//   }
 });
