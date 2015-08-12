@@ -163,13 +163,17 @@ if macos_version >= "10.9"
 end
 
 ohai "Installing dependencies..."
-warn " Make sure to read the info for each package and set up services or copy commands to start services"
+warn <<-CAVEATS
+Make sure to read the info for each package and set up services or copy
+commands to start services. You can type `brew info PACKAGE_NAME` if the info
+is no longer on your screen. You will need another terminal window for this.
+CAVEATS
 
 system "brew install pow"
 system "brew install dynamodb-local"
 system "brew install redis"
 
-ohai "Please scroll up to read info for each brew package."
+ohai "Please scroll up to read the Caveats for each brew package."
 
 wait_for_user if STDIN.tty?
 
@@ -202,8 +206,8 @@ Dir.chdir FOURFRONT_PREFIX do
     system "/bin/bash -o pipefail -c '/usr/bin/curl -#{curl_flags} #{FOURFRONT_REPO}/tarball/master | /usr/bin/tar xz -m --strip 1'"
   end
   if node
-    `npm install`
-    `node ./node_modules/4front-dynamodb/scripts/create-local-tables.js`
+    system "npm install"
+    system "node ./node_modules/4front-dynamodb/scripts/create-local-tables.js"
   else
     abort 'You need a working NodeJS install. Try `brew install nvm`'
   end
