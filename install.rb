@@ -6,7 +6,6 @@
 # BSD 2 Clause (NetBSD) license at https://github.com/Homebrew/homebrew/blob/master/LICENSE.txt
 # Users should run this command to use:
 # ruby -e "$(curl -fsSL https://raw.githubusercontent.com/4front/aws-platform/master/install.rb)"
-# TODO replace with master instaed of install-script branch above
 
 FOURFRONT_REPO = 'https://github.com/4front/aws-platform'
 FOURFRONT_PREFIX = "#{ENV['HOME']}/4front"
@@ -104,6 +103,7 @@ end
 def node
   # check for NVM, great!
   @node ||= if ENV['NVM_BIN'] and File.executable? File.join(ENV['NVM_BIN'],'node')
+    File.join(ENV['NVM_BIN'],'node')
   elsif Kernel.system '/usr/bin/which -s node'
     'node'
   else
@@ -215,6 +215,7 @@ Dir.chdir FOURFRONT_PREFIX do
     curl_flags = "fsSL"
     system "/bin/bash -o pipefail -c '/usr/bin/curl -#{curl_flags} #{FOURFRONT_REPO}/tarball/master | /usr/bin/tar xz -m --strip 1'"
   end
+
   if node
     system "npm install"
     system "node ./node_modules/4front-dynamodb/scripts/create-local-tables.js"
