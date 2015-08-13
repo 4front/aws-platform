@@ -183,11 +183,16 @@ system "brew install pow"
 system "brew install dynamodb-local"
 system "brew install redis"
 
-ohai "Please scroll up to read the Caveats for each brew package."
+ohai "Please scroll up to read the Caveats for each brew package. Do any commands needed now, please."
 
 wait_for_user if STDIN.tty?
 
 ohai "Downloading and installing 4Front..."
+if File.exists?("~/.pow/")
+  system "echo 1903 > ~/.pow/4front.dev"
+else
+  abort "You did not set up pow according to the brew caveats - the ~/.pow directory is missing"
+end
 
 if File.exists?(FOURFRONT_PREFIX)
   warn "4front directory alrady found, updating instead of installing"
