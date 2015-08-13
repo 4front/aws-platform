@@ -5,7 +5,7 @@
 # Additional functionality Copyright 2015 Aerobatic
 # BSD 2 Clause (NetBSD) license at https://github.com/Homebrew/homebrew/blob/master/LICENSE.txt
 # Users should run this command to use:
-# https://raw.githubusercontent.com/4front/aws-platform/install-script/install.rb
+# https://raw.githubusercontent.com/4front/aws-platform/master/install.rb
 # TODO replace with master instaed of install-script branch above
 
 FOURFRONT_REPO = 'https://github.com/4front/aws-platform'
