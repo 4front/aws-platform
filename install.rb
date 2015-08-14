@@ -243,4 +243,6 @@ else
   puts "Install #{Tty.white}Xcode#{Tty.reset}: https://developer.apple.com/xcode" unless File.exist? "/usr/bin/cc"
 end
 
-puts "Run `npm start` to start the 4front platform server."
+system "cd #{FOURFRONT_PREFIX}"
+
+puts "Run `npm start` to start the 4front platform server. You'll see '4front platform running' when it has started."
