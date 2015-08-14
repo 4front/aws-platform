@@ -192,7 +192,7 @@ ohai "Downloading and installing 4Front..."
 ## Config alias for 4front server for pow
 pow_path = File.join(ENV['HOME'],".pow")
 if File.symlink?(pow_path) || File.exists?(pow_path)
-  system "echo 1903 > ~/.pow/4front.dev"
+  system "echo 1903 > ~/.pow/4front"
 else
   abort "You did not set up pow according to the brew caveats - the ~/.pow directory is missing"
 end
