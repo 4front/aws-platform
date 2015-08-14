@@ -144,11 +144,3 @@ return server.listen(app.settings.port, function(err){
 
   app.settings.logger.info("4front platform running on port " + app.settings.port);
 });
-
-// Install plugins before starting the Express server
-// require('./lib/plugins')(app.settings)(function(err) {
-//   if (err) {
-//     app.settings.error("4front initialization error, %s", err.stack);
-//     return process.exit(1);
-//   }
-});
