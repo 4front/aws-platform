@@ -139,7 +139,7 @@ catch (err) {
 // so the node app only needs to listen over http.
 debug("start the express server");
 var server = http.createServer(app);
-return server.listen(app.settings.port, function(err){
+server.listen(app.settings.port, function(err){
   if (err) return callback(err);
 
   app.settings.logger.info("4front platform running on port " + app.settings.port);
