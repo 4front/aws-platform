@@ -87,7 +87,7 @@ try {
       var errorJson = Error.toJson(err);
 
       if (process.env.NODE_ENV !== 'development')
-        errorJson = _.pick(errorJson, 'message', 'code');
+        errorJson = _.pick(errorJson, 'message', 'code', 'help');
 
       // We don't care about the error stack for anything but 500 errors
       if (res.status !== 500)
