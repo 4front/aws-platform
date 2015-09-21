@@ -41,6 +41,7 @@
     "express-request-proxy": "^1.0.7",
     "express-session": "^1.11.3",
     "jade": "^1.11.0",
+    "lambda-invoker": "4front/lambda-invoker",
     "lodash": "^3.10.0",
     "redis": "^0.12.1",
     "redis-streams": "^1.0.6",
