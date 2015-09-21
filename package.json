@@ -1,6 +1,6 @@
 {
   "name": "4front-aws-platform",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "description": "AWS implementation of the 4front web app platform",
   "main": "index.js",
   "private": true,
@@ -25,6 +25,7 @@
     "4front-apphost": "git+https://git@github.com/4front/apphost.git",
     "4front-deployer": "git+https://git@github.com/4front/deployer.git",
     "4front-dynamodb": "git+https://git@github.com/4front/dynamodb.git",
+    "4front-lambda-invoker": "git+https://git@github.com/4front/lambda-invoker",
     "4front-ldap-auth": "git+https://git@github.com/4front/ldap-auth.git",
     "4front-logger": "git+https://git@github.com/4front/logger.git",
     "4front-membership": "git://github.com/4front/membership.git",
@@ -41,7 +42,6 @@
     "express-request-proxy": "^1.0.7",
     "express-session": "^1.11.3",
     "jade": "^1.11.0",
-    "lambda-invoker": "4front/lambda-invoker",
     "lodash": "^3.10.0",
     "redis": "^0.12.1",
     "redis-streams": "^1.0.6",
