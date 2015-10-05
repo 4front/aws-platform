@@ -1,13 +1,9 @@
 var express = require('express');
 var http = require('http');
-var urljoin = require('url-join');
-var fs = require('fs');
 var path = require('path');
 var favicon = require('serve-favicon');
 var debug = require('debug')('4front:aws-platform');
 var _ = require('lodash');
-var ChildProcess = require('child_process');
-var log = require('4front-logger');
 var serveStatic = require('serve-static');
 var accepts = require('accepts');
 
@@ -65,8 +61,8 @@ try {
     debug("root request");
     if (req.hostname !== app.settings.virtualHost)
       return next();
-    else
-      res.redirect("/portal");
+
+    res.redirect("/portal");
   });
 
   app.all('*', function(req, res, next) {
@@ -103,20 +99,20 @@ try {
 
       var accept = accepts(req);
       switch (accept.type(['json', 'html'])) {
-        case 'json':
-          res.json(errorJson);
-          break;
-        case 'html':
-          if (!errorView)
-            errorView = path.join(__dirname + '/views/error.jade');
+      case 'json':
+        res.json(errorJson);
+        break;
+      case 'html':
+        if (!errorView)
+          errorView = path.join(__dirname + '/views/error.jade');
 
-          res.render(errorView, errorJson);
-          break;
-        default:
-          // the fallback is text/plain, so no need to specify it above
-          res.setHeader('Content-Type', 'text/plain')
-          res.write(JSON.stringify(errorJson));
-          break;
+        res.render(errorView, errorJson);
+        break;
+      default:
+        // the fallback is text/plain, so no need to specify it above
+        res.setHeader('Content-Type', 'text/plain')
+        res.write(JSON.stringify(errorJson));
+        break;
       }
     });
   });
@@ -139,8 +135,10 @@ catch (err) {
 // so the node app only needs to listen over http.
 debug("start the express server");
 var server = http.createServer(app);
-server.listen(app.settings.port, function(err){
-  if (err) return callback(err);
+server.listen(app.settings.port, function(err) {
+  if (err) {
+    console.error(err);
+  }
 
   app.settings.logger.info("4front platform running on port " + app.settings.port);
 });
