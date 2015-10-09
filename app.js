@@ -38,18 +38,18 @@ try {
   // in the router pipeline.
   app.use(require('4front-apphost')(app.settings));
 
-  app.use("/api", require('4front-api')(app.settings));
+  app.use('/api', require('4front-api')(app.settings));
 
   var portal;
   // For ease of development on portal
   if (process.env.FF_DEV_LOCAL_PORTAL) {
-    debug("using local filesystem portal");
+    debug('using local filesystem portal');
     portal = require('../../4front/portal');
-  }
-  else
+  } else {
     portal = require('4front-portal');
+  }
 
-  app.use("/portal", portal(_.extend({}, app.settings, {
+  app.use('/portal', portal(_.extend({}, app.settings, {
     basePath: '/portal',
     apiUrl: '/api'
   })));
@@ -58,16 +58,15 @@ try {
   app.use(serveStatic('public/', {fallthrough: true, index: false}));
 
   app.get('/', function(req, res, next) {
-    debug("root request");
-    if (req.hostname !== app.settings.virtualHost)
-      return next();
+    debug('root request');
+    if (req.hostname !== app.settings.virtualHost) return next();
 
-    res.redirect("/portal");
+    res.redirect('/portal');
   });
 
   app.all('*', function(req, res, next) {
     // If we fell all the way through, then raise a 404 error
-    next(Error.http(404, "Page not found"));
+    next(Error.http(404, 'Page not found'));
   });
 
   // Register the error middleware together with middleware to display the error page.
@@ -75,27 +74,29 @@ try {
   // the error page rendering middleware steals final control.
   app.use(function(err, req, res, next) {
     app.settings.logger.middleware.error(err, req, res, function() {
-      debug("last chance error page middleware %s", err.stack);
+      debug('last chance error page middleware %s', err.stack);
 
-      if (!err.status)
-        err.status = 500;
+      if (!err.status) err.status = 500;
 
       var errorJson = Error.toJson(err);
 
-      if (process.env.NODE_ENV !== 'development')
+      if (process.env.NODE_ENV !== 'development') {
         errorJson = _.pick(errorJson, 'message', 'code', 'help');
+      }
 
       // We don't care about the error stack for anything but 500 errors
-      if (res.status !== 500)
+      if (res.status !== 500) {
         errorJson.stack = null;
+      }
 
       res.set('Cache-Control', 'no-cache');
 
       res.statusCode = err.status;
 
       var errorView;
-      if (req.ext)
+      if (req.ext) {
         errorView = req.ext.customErrorView;
+      }
 
       var accept = accepts(req);
       switch (accept.type(['json', 'html'])) {
@@ -103,22 +104,22 @@ try {
         res.json(errorJson);
         break;
       case 'html':
-        if (!errorView)
+        if (!errorView) {
           errorView = path.join(__dirname + '/views/error.jade');
+        }
 
         res.render(errorView, errorJson);
         break;
       default:
         // the fallback is text/plain, so no need to specify it above
-        res.setHeader('Content-Type', 'text/plain')
+        res.setHeader('Content-Type', 'text/plain');
         res.write(JSON.stringify(errorJson));
         break;
       }
     });
   });
-}
-catch (err) {
-  console.error("App configuration error %s", err.stack);
+} catch (err) {
+  app.settings.console.error('App configuration error %s', err.stack);
   process.exit();
 }
 
@@ -133,12 +134,13 @@ catch (err) {
 // Start the express server
 // Assuming that SSL cert is terminated upstream by something like Apache, Ngninx, or ELB,
 // so the node app only needs to listen over http.
-debug("start the express server");
+debug('start the express server');
 var server = http.createServer(app);
 server.listen(app.settings.port, function(err) {
   if (err) {
-    console.error(err);
+    app.settings.logger.error(err);
+    return;
   }
 
-  app.settings.logger.info("4front platform running on port " + app.settings.port);
+  app.settings.logger.info('4front platform running on port ' + app.settings.port);
 });

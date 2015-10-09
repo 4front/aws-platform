@@ -28,7 +28,7 @@ gulp.task('copy', function() {
     'setup/*'
   ];
 
-  return gulp.src(srcs, {base: "."})
+  return gulp.src(srcs, {base: '.'})
     .pipe(gulp.dest('dist/'));
 });
 
@@ -49,8 +49,8 @@ gulp.task('upload', function() {
     .pipe(s3({
       bucket: 'releases.4front.io', //  Required
       ACL: 'public-read', //  Needs to be user-defined
-      keyTransform: function(relative_filename) {
-        return "aws/" + versionNumber + ".zip"
+      keyTransform: function() {
+        return 'aws/' + versionNumber + '.zip';
       }
     }));
 });
@@ -60,23 +60,22 @@ gulp.task('upload-latest', function() {
     .pipe(s3({
       bucket: 'releases.4front.io', //  Required
       ACL: 'public-read', //  Needs to be user-defined
-      ContentDisposition: "attachment;filename=" + versionNumber + ".zip",
-      keyTransform: function(relative_filename) {
-        return "aws/latest.zip"
+      ContentDisposition: 'attachment;filename=' + versionNumber + '.zip',
+      keyTransform: function() {
+        return 'aws/latest.zip';
       }
     }));
 });
 
 // Run gulp on the portal module
-gulp.task('portal', function (callback) {
-  var spawned = spawn("gulp", ["build"], {
-    cwd: "./dist/node_modules/4front-portal",
+gulp.task('portal', function(callback) {
+  var spawned = spawn('gulp', ['build'], {
+    cwd: './dist/node_modules/4front-portal',
     inheritStdio: true,
     waitForExit: true
   });
 
-  spawned.on('exit', function(code, signal) {
-    // if (code !== 0)
+  spawned.on('exit', function() {
     callback();
   });
 
@@ -98,13 +97,6 @@ gulp.task('package-json', function(callback) {
     json.dependencies = {};
     fs.writeFile('./dist/package.json', JSON.stringify(json, null, 2), callback);
   });
-});
-
-gulp.task('s3-redirect', function(callback) {
-  // Update the S3 bucket redirect rules so /latest redirects to the highest numbered
-  // version.
-
-  // http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putBucketWebsite-property
 });
 
 gulp.task('deploy', function(callback) {
