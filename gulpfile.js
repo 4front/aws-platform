@@ -20,6 +20,7 @@ gulp.task('clean', function(cb) {
 gulp.task('copy', function() {
   var srcs = [
     'app.js',
+    '503.html',
     'package.json',
     '.ebextensions/*',
     'lib/**/*.js',
