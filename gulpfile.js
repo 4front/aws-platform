@@ -22,7 +22,7 @@ gulp.task('copy', function() {
     'app.js',
     '503.html',
     'package.json',
-    '.ebextensions/*',
+    '.ebextensions/**/*',
     'lib/**/*.js',
     'public/**/*.*',
     'views/*',
