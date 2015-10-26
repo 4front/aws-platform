@@ -16,8 +16,6 @@ var localInstance = process.env.NODE_ENV === 'development';
 try {
   require('./lib/configuration')(app, localInstance);
 
-  app.use(favicon(path.join(__dirname, './public/images/favicon.ico')));
-
   // Putting this after the deployment static asset path
   // to avoid flooding logs with js and css requests.
   app.use(app.settings.logger.middleware.request);
@@ -67,6 +65,14 @@ try {
   app.all('*', function(req, res, next) {
     // If we fell all the way through, then raise a 404 error
     next(Error.http(404, 'Page not found'));
+  });
+
+  // Last chance to serve the default favicon.ico.
+  app.use(function(err, req, res, next) {
+    if (err.status === 404 && req.path === '/favicon.ico') {
+      return favicon(req.app.settings.faviconPath)(req, res, next);
+    }
+    next();
   });
 
   // Register the error middleware together with middleware to display the error page.
