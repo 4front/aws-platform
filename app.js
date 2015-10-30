@@ -72,7 +72,7 @@ try {
     if (err.status === 404 && req.path === '/favicon.ico') {
       return favicon(req.app.settings.faviconPath)(req, res, next);
     }
-    next();
+    next(err);
   });
 
   // Register the error middleware together with middleware to display the error page.
