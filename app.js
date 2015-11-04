@@ -16,8 +16,6 @@ var localInstance = process.env.NODE_ENV === 'development';
 try {
   require('./lib/configuration')(app, localInstance);
 
-  // Putting this after the deployment static asset path
-  // to avoid flooding logs with js and css requests.
   app.use(app.settings.logger.middleware.request);
 
   // No harm in parsing cookies on all requests. But intentionally
@@ -125,7 +123,7 @@ try {
     });
   });
 } catch (err) {
-  app.settings.console.error('App configuration error %s', err.stack);
+  app.settings.logger.error('App configuration error %s', err.stack);
   process.exit();
 }
 
