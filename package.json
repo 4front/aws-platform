@@ -1,6 +1,6 @@
 {
   "name": "4front-aws-platform",
-  "version": "0.0.64",
+  "version": "0.0.65",
   "description": "AWS implementation of the 4front web app platform",
   "main": "index.js",
   "private": true,
@@ -30,6 +30,7 @@
     "4front-logger": "git+https://git@github.com/4front/logger.git",
     "4front-membership": "git://github.com/4front/membership.git",
     "4front-portal": "git+https://git@github.com/4front/portal.git",
+    "4front-shared": "git+https://git@github.com/4front/shared.git",
     "4front-s3-storage": "git+https://git@github.com/4front/s3-storage.git",
     "accepts": "^1.2.12",
     "async": "^1.4.0",

@@ -1,11 +1,10 @@
 var express = require('express');
 var http = require('http');
-var path = require('path');
 var favicon = require('serve-favicon');
 var debug = require('debug')('4front:aws-platform');
 var _ = require('lodash');
 var serveStatic = require('serve-static');
-var accepts = require('accepts');
+var shared = require('4front-shared');
 
 var app = express();
 app.enable('trust proxy');
@@ -14,6 +13,7 @@ app.set('view engine', 'jade');
 var localInstance = process.env.NODE_ENV === 'development';
 
 try {
+  shared.configure(app);
   require('./lib/configuration')(app, localInstance);
 
   app.use(app.settings.logger.middleware.request);
@@ -50,6 +50,9 @@ try {
     apiUrl: '/api'
   })));
 
+  app.use('/__debug', shared.debug(app.settings));
+  app.get('/__health', shared.healthCheck(app.settings));
+
   // Deliberately register the static middleware after all the other routes
   app.use(serveStatic('public/', {fallthrough: true, index: false}));
 
@@ -73,59 +76,12 @@ try {
     next(err);
   });
 
-  // Register the error middleware together with middleware to display the error page.
-  // This is the most reliable way I've found to reliably log the error first before
-  // the error page rendering middleware steals final control.
-  app.use(function(err, req, res, next) {
-    app.settings.logger.middleware.error(err, req, res, function() {
-      debug('last chance error page middleware %s', err.stack);
-
-      if (!err.status) err.status = 500;
-
-      var errorJson = Error.toJson(err);
-
-      if (process.env.NODE_ENV !== 'development') {
-        errorJson = _.pick(errorJson, 'message', 'code', 'help');
-      }
-
-      // We don't care about the error stack for anything but 500 errors
-      if (res.status !== 500) {
-        errorJson.stack = null;
-      }
-
-      res.set('Cache-Control', 'no-cache');
-
-      res.statusCode = err.status;
-
-      var errorView;
-      if (req.ext) {
-        errorView = req.ext.customErrorView;
-      }
-
-      var accept = accepts(req);
-      switch (accept.type(['json', 'html'])) {
-      case 'json':
-        res.json(errorJson);
-        break;
-      case 'html':
-        if (!errorView) {
-          errorView = path.join(__dirname + '/views/error.jade');
-        }
-
-        res.render(errorView, errorJson);
-        break;
-      default:
-        // the fallback is text/plain, so no need to specify it above
-        res.setHeader('Content-Type', 'text/plain');
-        res.write(JSON.stringify(errorJson));
-        break;
-      }
-    });
-  });
+  app.use(shared.error(app.settings));
 } catch (err) {
   app.settings.logger.error('App configuration error %s', err.stack);
   process.exit();
 }
+
 
 // app.use('/debug', require('4front-debug'));
 // app.use('/debug', function(req, res, next) {
