@@ -30,13 +30,21 @@ try {
     next();
   });
 
-  // The virtual app host subapp. Needs to come first
-  // in the router pipeline.
+  // The appHostRouter and apiRouter are also needed by the health check.
+  // However the real routes cannot be mounted until after the __health endpoint.
+  // Otherwise the localhost:8080 that the ELB makes the call on will result in
+  // a 404 response from the apphost which will cause the servers to be deemed
+  // unhealthy and taken out of service.
   var appHostRouter = require('4front-apphost')(app.settings);
+  var apiRouter = require('4front-api')(app.settings);
+
+  app.use('/__debug', shared.debug(app.settings));
+  app.get('/__health', shared.healthCheck(app.settings, apiRouter, appHostRouter));
+
+  // Mount the apphosting router
   app.use(appHostRouter);
 
-  // The apiRouter is also passed into the healthCheck below.
-  var apiRouter = require('4front-api')(app.settings);
+  // Mount the api router
   app.use('/api', apiRouter);
 
   var portal;
@@ -52,9 +60,6 @@ try {
     basePath: '/portal',
     apiUrl: '/api'
   })));
-
-  app.use('/__debug', shared.debug(app.settings));
-  app.get('/__health', shared.healthCheck(app.settings, apiRouter, appHostRouter));
 
   // Deliberately register the static middleware after all the other routes
   app.use(serveStatic('public/', {fallthrough: true, index: false}));
