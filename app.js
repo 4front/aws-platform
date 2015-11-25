@@ -32,9 +32,12 @@ try {
 
   // The virtual app host subapp. Needs to come first
   // in the router pipeline.
-  app.use(require('4front-apphost')(app.settings));
+  var appHostRouter = require('4front-apphost')(app.settings);
+  app.use(appHostRouter);
 
-  app.use('/api', require('4front-api')(app.settings));
+  // The apiRouter is also passed into the healthCheck below.
+  var apiRouter = require('4front-api')(app.settings);
+  app.use('/api', apiRouter);
 
   var portal;
   // For ease of development on portal
@@ -51,7 +54,7 @@ try {
   })));
 
   app.use('/__debug', shared.debug(app.settings));
-  app.get('/__health', shared.healthCheck(app.settings));
+  app.get('/__health', shared.healthCheck(app.settings, apiRouter, appHostRouter));
 
   // Deliberately register the static middleware after all the other routes
   app.use(serveStatic('public/', {fallthrough: true, index: false}));
