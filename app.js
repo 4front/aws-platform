@@ -1,6 +1,5 @@
 var express = require('express');
 var http = require('http');
-var favicon = require('serve-favicon');
 var debug = require('debug')('4front:aws-platform');
 var _ = require('lodash');
 var serveStatic = require('serve-static');
@@ -10,11 +9,9 @@ var app = express();
 app.enable('trust proxy');
 app.set('view engine', 'jade');
 
-var localInstance = process.env.NODE_ENV === 'development';
-
 try {
   shared.configure(app);
-  require('./lib/configuration')(app, localInstance);
+  require('./lib/configure')(app);
 
   app.use(app.settings.logger.middleware.request);
 
@@ -38,8 +35,8 @@ try {
   var appHostRouter = require('4front-apphost')(app.settings);
   var apiRouter = require('4front-api')(app.settings);
 
-  app.use('/__debug', shared.debug(app.settings));
-  app.get('/__health', shared.healthCheck(app.settings, apiRouter, appHostRouter));
+  app.use('/__debug', shared.routes.debug(app.settings));
+  app.get('/__health', shared.routes.healthCheck(app.settings, apiRouter, appHostRouter));
 
   // Mount the apphosting router
   app.use(appHostRouter);
@@ -71,33 +68,12 @@ try {
     res.redirect('/portal');
   });
 
-  app.all('*', function(req, res, next) {
-    // If we fell all the way through, then raise a 404 error
-    next(Error.http(404, 'Page not found'));
-  });
-
-  // Last chance to serve the default favicon.ico.
-  app.use(function(err, req, res, next) {
-    if (err.status === 404 && req.path === '/favicon.ico') {
-      return favicon(req.app.settings.faviconPath)(req, res, next);
-    }
-    next(err);
-  });
-
-  app.use(shared.error(app.settings));
+  app.use(shared.routes.catchAll(app.settings));
+  app.use(shared.routes.error(app.settings));
 } catch (err) {
   app.settings.logger.error('App configuration error %s', err.stack);
   process.exit();
 }
-
-
-// app.use('/debug', require('4front-debug'));
-// app.use('/debug', function(req, res, next) {
-//   res.json(app.settings.cache.keys);
-// });
-
-// TODO: Run a series of diagnostic tests to ensure connectivity to all required
-// AWS resources including DynamoDB, Redis, and S3
 
 // Start the express server
 // Assuming that SSL cert is terminated upstream by something like Apache, Ngninx, or ELB,
