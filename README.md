@@ -9,5 +9,9 @@ AWS specific implementation of the [4front](http://4front.io) open-source web ap
 You can also run a local developer instance on OSX:
 [http://4front.io/docs/install/local.html](http://4front.io/docs/install/local.html)
 
+### TODO
+* Incorporate logstash into .ebextensions for log aggregation to ES - https://github.com/dhanugupta/ebs-logstash/wiki/Integrating-logstash-with-ElasticBeanStalk-AWS-via-ebextensions
+
+
 ## License
 Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0).
