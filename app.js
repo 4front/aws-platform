@@ -69,9 +69,10 @@ try {
   });
 
   app.use(shared.routes.catchAll(app.settings));
+
   app.use(shared.routes.error(app.settings));
 } catch (err) {
-  app.settings.logger.error('App configuration error %s', err.stack);
+  (app.settings.logger ? app.settings.logger : console).error('App configuration error %s', err.stack);
   process.exit();
 }
 
