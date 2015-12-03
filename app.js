@@ -36,7 +36,7 @@ try {
   var apiRouter = require('4front-api')(app.settings);
 
   app.use('/__debug', shared.routes.debug(app.settings));
-  app.get('/__health', shared.routes.healthCheck(app.settings, apiRouter, appHostRouter));
+  app.use('/__health', shared.routes.healthCheck(app.settings, apiRouter, appHostRouter));
 
   // Mount the apphosting router
   app.use(appHostRouter);
