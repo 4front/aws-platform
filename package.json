@@ -1,6 +1,6 @@
 {
   "name": "4front-aws-platform",
-  "version": "0.0.76",
+  "version": "0.0.77",
   "description": "AWS implementation of the 4front web app platform",
   "main": "index.js",
   "private": true,
@@ -43,6 +43,7 @@
     "express-request-proxy": "^1.0.8",
     "express-session": "^1.11.3",
     "jade": "^1.11.0",
+    "js-yaml": "^3.4.6",
     "lodash": "^3.10.0",
     "redis": "^0.12.1",
     "redis-streams": "^1.0.6",
@@ -72,7 +73,7 @@
     "gulp-zip": "^3.0.2",
     "nib": "^1.1.0",
     "run-sequence": "^1.1.2",
-    "s3rver": "0.0.5",
+    "s3rver": "0.0.12",
     "stream-series": "^0.1.1"
   }
 }

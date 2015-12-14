@@ -5,14 +5,33 @@ var _ = require('lodash');
 var serveStatic = require('serve-static');
 var shared = require('4front-shared');
 
+require('simple-errors');
+
 var app = express();
 app.enable('trust proxy');
 app.set('view engine', 'jade');
 
-try {
-  shared.configure(app);
-  require('./lib/configure')(app);
+function initializationError(err) {
+  (app.settings.logger ? app.settings.logger : console).error('App configuration error: %s', err.stack);
+  return process.exit();
+}
 
+require('./lib/configure')(app, function(configErr) {
+  if (configErr) {
+    return initializationError(configErr);
+  }
+
+  try {
+    registerRoutes();
+  } catch (routeError) {
+    return initializationError(routeError);
+  }
+
+  startExpressServer();
+});
+
+function registerRoutes() {
+  debug('register routes');
   app.use(app.settings.logger.middleware.request);
 
   // No harm in parsing cookies on all requests. But intentionally
@@ -71,21 +90,19 @@ try {
   app.use(shared.routes.catchAll(app.settings));
 
   app.use(shared.routes.error(app.settings));
-} catch (err) {
-  (app.settings.logger ? app.settings.logger : console).error('App configuration error %s', err.stack);
-  process.exit();
 }
 
 // Start the express server
 // Assuming that SSL cert is terminated upstream by something like Apache, Ngninx, or ELB,
 // so the node app only needs to listen over http.
-debug('start the express server');
-var server = http.createServer(app);
-server.listen(app.settings.port, function(err) {
-  if (err) {
-    app.settings.logger.error(err);
-    return;
-  }
+function startExpressServer() {
+  debug('start the express server');
+  var server = http.createServer(app);
+  server.listen(app.settings.port, function(err) {
+    if (err) {
+      return initializationError(err);
+    }
 
-  app.settings.logger.info('4front platform running on port ' + app.settings.port);
-});
+    app.settings.logger.info('4front platform running on port ' + app.settings.port);
+  });
+}

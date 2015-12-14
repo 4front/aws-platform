@@ -1,0 +1,14 @@
+settings:
+  cryptoPassword: 4front
+  jwtTokenSecret: 4front
+  virtualHost: 4front.dev
+  s3Bucket: 4front
+  sessionSecret: session-secret
+  jwtTokenExpire: 1440
+  sslEnabled: false
+  deployedAssetsPath: /deployments
+  deploymentsS3Prefix: deployments/
+  starterTemplates:
+    - name: 'React Startify'
+      description: 'React JS application skeleton using Browserify, Gulp, and ES6'
+      url: 'https://github.com/4front/react-starterify/archive/master.zip'
