@@ -8,7 +8,7 @@ export DYNAMO_LOCAL_PORT=8000
 echo $1
 
 # Start the fakeS3 server
-./node_modules/.bin/s3rver --port $FAKE_S3_PORT -d ./ -s &
+./node_modules/.bin/s3rver --port $FAKE_S3_PORT -d ./ --silent &
 
 if [ $1 = "debug" ]
 then
