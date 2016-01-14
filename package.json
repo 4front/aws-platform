@@ -22,7 +22,7 @@
   "dependencies": {
     "4front-api": "git+https://git@github.com/4front/api.git",
     "4front-app-registry": "git+https://git@github.com/4front/app-registry.git",
-    "4front-apphost": "git+https://git@github.com/4front/apphost.git",
+    "4front-http-host": "git+https://git@github.com/4front/http-host.git",
     "4front-deployer": "git+https://git@github.com/4front/deployer.git",
     "4front-dynamodb": "git+https://git@github.com/4front/dynamodb.git",
     "4front-lambda-invoker": "git+https://git@github.com/4front/lambda-invoker",

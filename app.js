@@ -26,19 +26,19 @@ app.use(function(req, res, next) {
   next();
 });
 
-// The appHostRouter and apiRouter are also needed by the health check.
+// The httpHostRouter and apiRouter are also needed by the health check.
 // However the real routes cannot be mounted until after the __health endpoint.
 // Otherwise the localhost:8080 that the ELB makes the call on will result in
-// a 404 response from the apphost which will cause the servers to be deemed
+// a 404 response from the http-host which will cause the servers to be deemed
 // unhealthy and taken out of service.
-var appHostRouter = require('4front-apphost')(app.settings);
+var httpHostRouter = require('4front-http-host')(app.settings);
 var apiRouter = require('4front-api')(app.settings);
 
 app.use('/__debug', shared.routes.debug(app.settings));
-app.use('/__health', shared.routes.healthCheck(app.settings, apiRouter, appHostRouter));
+app.use('/__health', shared.routes.healthCheck(app.settings, apiRouter, httpHostRouter));
 
-// Mount the apphosting router
-app.use(appHostRouter);
+// Mount the http-host router
+app.use(httpHostRouter);
 
 // Mount the api router
 app.use('/api', apiRouter);
