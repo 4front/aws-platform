@@ -1,6 +1,6 @@
 {
   "name": "4front-aws-platform",
-  "version": "0.0.88",
+  "version": "0.0.89",
   "description": "AWS implementation of the 4front web app platform",
   "main": "index.js",
   "private": true,
@@ -71,6 +71,7 @@
     "gulp-s3-upload": "^1.0.5",
     "gulp-stylus": "^2.0.6",
     "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.7",
     "gulp-zip": "^3.0.2",
     "nib": "^1.1.0",
     "run-sequence": "^1.1.2",

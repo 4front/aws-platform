@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var gutil = require('gulp-util');
 var zip = require('gulp-zip');
 var fs = require('fs');
 var del = require('del');
@@ -40,13 +41,19 @@ gulp.task('node-mods', function() {
 });
 
 gulp.task('zip', function() {
+  var zipfile = versionNumber + '.zip';
+  var zipdir = os.tmpdir();
+
+  gutil.log('writing zip file to %s/%s', zipdir, zipfile);
   return gulp.src(['dist/**/*'], {dot: true})
-    .pipe(zip(versionNumber + '.zip'))
-    .pipe(gulp.dest(os.tmpdir()));
+    .pipe(zip(zipfile))
+    .pipe(gulp.dest(zipdir));
 });
 
 gulp.task('upload', function() {
-  gulp.src(os.tmpdir() + '/' + versionNumber + '.zip')
+  var bundleFile = os.tmpdir() + '/' + versionNumber + '.zip';
+  gutil.log('uploading version bundle %s to S3 bucket releases.4front.io as %s.zip', bundleFile, versionNumber);
+  gulp.src(bundleFile)
     .pipe(s3({
       bucket: 'releases.4front.io', //  Required
       ACL: 'public-read', //  Needs to be user-defined
@@ -57,6 +64,9 @@ gulp.task('upload', function() {
 });
 
 gulp.task('upload-latest', function() {
+  var bundleFile = os.tmpdir() + '/' + versionNumber + '.zip';
+  gutil.log('uploading version bundle %s to S3 bucket releases.4front.io as latest', bundleFile);
+
   gulp.src(os.tmpdir() + '/' + versionNumber + '.zip')
     .pipe(s3({
       bucket: 'releases.4front.io', //  Required
@@ -108,7 +118,7 @@ gulp.task('deploy', function(callback) {
     ['portal'],
     ['package-json'],
     ['zip'],
-    ['upload', 'upload-latest'],
+    // ['upload', 'upload-latest'],
     callback
   );
 });
